@@ -37,17 +37,26 @@ class MyScene : Scene() {
     private lateinit var lineOI: Line
 
     private lateinit var hCircle: Circle
+    private lateinit var iCircle: Circle
+    private lateinit var gCircle: Circle
 
     private lateinit var labelH: Text
     private lateinit var labelI: Text
     private lateinit var labelG: Text
     private lateinit var labelP: Text
     private lateinit var labelO: Text
+    private lateinit var labelE: Text
+
+    private val circlesVisible = false
+
+    private val drawnPointsList = arrayListOf<Circle>()
+
+    //todo: add sliders for length of diamond and radius of circle
 
     override suspend fun SContainer.sceneMain() {
         pointH = circle(10f).colorMul(Colors.CYAN).xy(400, 400)
         pointI = circle(10f).colorMul(Colors.CYAN).xy(600, 400)
-        pointG = circle(10f).colorMul(Colors.RED)
+        pointG = circle(10f).colorMul(Colors.RED).position(getClosestPointToCircle(pointH.center, sqrt(11.39f) * 100, Point(600, 200)))
         pointP = circle(10f).colorMul(Colors.RED)
         pointO = circle(10f).colorMul(Colors.GREEN)
         pointE = circle(10f).colorMul(Colors.ORANGE)
@@ -65,8 +74,11 @@ class MyScene : Scene() {
         labelG = text("G").colorMul(Colors.RED)
         labelP = text("P").colorMul(Colors.RED)
         labelO = text("O").colorMul(Colors.GREEN)
+        labelE = text("E").colorMul(Colors.ORANGE)
 
         hCircle = circle(sqrt(11.39f)* 100, fill = Colors.TRANSPARENT, stroke = Colors.WHITE, strokeThickness = 3f)
+        iCircle = circle(sqrt(8.7f)* 100, fill = Colors.TRANSPARENT, stroke = Colors.WHITE, strokeThickness = 3f)
+        gCircle = circle(sqrt(8.7f)* 100, fill = Colors.TRANSPARENT, stroke = Colors.WHITE, strokeThickness = 3f)
 
         pointH.draggable {
             pointG.position(getClosestPointToCircle(Point(it.viewNextX, it.viewNextY), sqrt(11.39f) * 100, pointG.pos))
@@ -88,11 +100,20 @@ class MyScene : Scene() {
 
     }
 
-    private fun updateScreen() {
+    private fun SContainer.updateScreen() {
         val radius1 = sqrt(8.7f) * 100
 
         pointP.position(getCircleIntersect(pointG.center, pointI.center, radius1, radius1))
         pointO.position(getCircleIntersect(pointI.center, pointG.center, radius1, radius1))
+
+        val eCoord = getIntersectionFourPoints(pointG.center, pointH.center, pointO.center, pointP.center)
+        if (eCoord != null) {
+            pointE.visible(true).position(eCoord.originFromCenter)
+            labelE.visible(true)
+        } else {
+            pointE.visible(false)
+            labelE.visible(false)
+        }
 
         lineGH.setPoints(pointG.center, pointH.center)
         lineOP.setPoints(pointO.center, pointP.center)
@@ -102,7 +123,18 @@ class MyScene : Scene() {
         lineOI.setPoints(pointO.center, pointI.center)
 
         hCircle.position(pointH.center - Point(sqrt(11.39f) * 100, sqrt(11.39f) * 100))
+        iCircle.position(pointI.center - Point(sqrt(8.7f) * 100, sqrt(8.7f) * 100))
+        gCircle.position(pointG.center - Point(sqrt(8.7f) * 100, sqrt(8.7f) * 100))
 
+        hCircle.visible(circlesVisible)
+        iCircle.visible(circlesVisible)
+        gCircle.visible(circlesVisible)
+
+        drawnPointsList.add(circle(10f).position(pointE.pos).colorMul(Colors.WHITE))
+        if (drawnPointsList.size > 1000) {
+            drawnPointsList[0].removeFromParent()
+            drawnPointsList.removeAt(0)
+        }
         updateLabels()
     }
 
@@ -114,7 +146,7 @@ class MyScene : Scene() {
         labelG.position(pointG.center + Point(offset, offset))
         labelP.position(pointP.center + Point(offset, offset))
         labelO.position(pointO.center + Point(offset, offset))
-
+        labelE.position(pointE.center + Point(offset, offset))
     }
 
     private fun getCircleIntersect(m1: Point, m2: Point, r1: Float, r2: Float): Point {
@@ -140,5 +172,21 @@ class MyScene : Scene() {
         val aY = m.y + (dY / magV) * r
 
         return Point(aX, aY)
+    }
+
+    private fun getIntersectionFourPoints(point1: Point, point2: Point, point3: Point, point4: Point): Point? {
+        if ((point1.x - point2.x) * (point3.y - point4.y) - (point1.y - point2.y) * (point3.x - point4.x) == 0f) {
+            return null
+        }
+
+        val pX = (
+            (point1.x * point2.y - point1.y * point2.x) * (point3.x - point4.x) - (point1.x - point2.x) * (point3.x * point4.y - point3.y * point4.x))/
+            ((point1.x - point2.x) * (point3.y - point4.y) - (point1.y - point2.y) * (point3.x - point4.x))
+
+        val pY = (
+            (point1.x * point2.y - point1.y * point2.x) * (point3.y - point4.y) - (point1.y - point2.y) * (point3.x * point4.y - point3.y * point4.x))/
+            ((point1.x - point2.x) * (point3.y - point4.y) - (point1.y - point2.y) * (point3.x - point4.x))
+
+        return Point(pX, pY)
     }
 }
