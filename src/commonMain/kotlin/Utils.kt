@@ -14,6 +14,7 @@ fun getCircleIntersect(m1: Point, m2: Point, r1: Float, r2: Float): Point {
 }
 
 val Circle.center get() = Point(x + width / 2, y + height / 2)
+val Point.center get() = Point(x + 10, y + 10)
 val Point.originFromCenter get() = Point(x - 10, y - 10)
 
 fun getClosestPointToCircle(m: Point, r: Float, p: Point): Point {
@@ -41,4 +42,19 @@ fun getIntersectionFourPoints(point1: Point, point2: Point, point3: Point, point
         ((point1.x - point2.x) * (point3.y - point4.y) - (point1.y - point2.y) * (point3.x - point4.x))
 
     return Point(pX, pY)
+}
+
+fun getPointFromAngleAndDistance(point: Point, angle: Float, distance: Float): Point {
+    val x = point.x + distance * cos(angle)
+    val y = point.y + distance * sin(angle)
+
+    return Point(x, y)
+}
+
+fun getAngleBetweenPoints(point1: Point, point2: Point): Float {
+    return atan2(point2.y - point1.y, point2.x - point1.x)
+}
+
+fun getDistanceBetweenPoints(point1: Point, point2: Point): Float {
+    return sqrt((point1.x - point2.x).pow(2) + (point1.y - point2.y).pow(2))
 }

@@ -10,7 +10,7 @@ import korlibs.math.*
 import korlibs.math.geom.*
 import kotlin.math.*
 
-class Ellipsograaf : Scene() {
+class Parabolograaf : Scene() {
     private lateinit var pointH: Circle
     private lateinit var pointI: Circle
     private lateinit var pointG: Circle
