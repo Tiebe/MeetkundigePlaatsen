@@ -15,7 +15,7 @@ import kotlin.math.*
 lateinit var sceneContainer: SceneContainer
 
 suspend fun main() = Korge(
-    title = "Ellipsograaf",
+    title = "Meetkundige plaatsen",
     windowSize = Size(1280, 720),
     backgroundColor = Colors["#2b2b2b"],
     displayMode = KorgeDisplayMode(ScaleMode.SHOW_ALL, Anchor.TOP_LEFT, clipBorders = false),
@@ -28,23 +28,29 @@ suspend fun main() = Korge(
 
 class Menu : Scene() {
     override suspend fun SContainer.sceneInit() {
-        text("Press 1 to start Ellipsograaf") {
+        text("Start Ellipsograaf (1)") {
             position(50, 100)
             colorMul = Colors.WHITE
             fontSize = 100.0f
+        }.onClick {
+            sceneContainer.changeTo({ Ellipsograaf() })
         }
 
-        text("Press 2 to start Hyperbolograaf") {
+        text("Start Hyperbolograaf (2)") {
             position(50, 200)
             colorMul = Colors.WHITE
             fontSize = 100.0f
+        }.onClick {
+            sceneContainer.changeTo({ Hyperbolograaf() })
         }
 
-        text("Press 3 to start Parabolograaf") {
+        /*text("Start Parabolograaf (3)") {
             position(50, 300)
             colorMul = Colors.WHITE
             fontSize = 100.0f
-        }
+        }.onClick {
+            sceneContainer.changeTo({ Parabolograaf() })
+        }*/
     }
 
     override suspend fun SContainer.sceneMain() {
