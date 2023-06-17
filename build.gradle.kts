@@ -15,7 +15,7 @@ allprojects {
 
 korge {
 	id = "korlibs.korge.starterkit.compose"
-    name = "Korge Compose"
+    name = "Meetkundige plaatsen"
     title = name
     icon = file("icon.png")
 
