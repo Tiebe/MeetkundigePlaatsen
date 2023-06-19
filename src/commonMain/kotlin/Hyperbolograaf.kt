@@ -130,7 +130,7 @@ class Hyperbolograaf : Scene() {
 
 
         if (showDrawnDots) {
-            drawnPointsList.add(circle(10f).position(pointE.pos).colorMul(Colors.WHITE))
+            drawnPointsList.add(circle(10f).position(pointE.pos).colorMul(Colors.WHITE).apply { bringToBottom() })
             if (drawnPointsList.size > 1000) {
                 drawnPointsList[0].removeFromParent()
                 drawnPointsList.removeAt(0)

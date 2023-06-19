@@ -11,30 +11,33 @@ import korlibs.math.geom.*
 import kotlin.math.*
 
 class Parabolograaf : Scene() {
-    private lateinit var pointC: Circle
+    private lateinit var pointJ: Circle
+    private lateinit var pointI: Circle
+    private lateinit var pointG: Circle
+    private lateinit var pointH: Circle
     private lateinit var pointF: Circle
-    private lateinit var pointD: Circle
-    private lateinit var pointM: Circle
-    private lateinit var pointL: Circle
     private lateinit var pointE: Circle
+    private lateinit var pointB: Circle
 
-    private lateinit var cCircle: Circle
-    private lateinit var fCircle: Circle
-    private lateinit var dCircle: Circle
+    private lateinit var gCircle: Circle
+    private lateinit var bCircle: Circle
 
-    private lateinit var labelC: Text
+    private lateinit var labelJ: Text
+    private lateinit var labelI: Text
+    private lateinit var labelG: Text
+    private lateinit var labelH: Text
     private lateinit var labelF: Text
-    private lateinit var labelD: Text
-    private lateinit var labelL: Text
-    private lateinit var labelM: Text
     private lateinit var labelE: Text
+    private lateinit var labelB: Text
 
-    private lateinit var lineMD: Line
-    private lateinit var lineLD: Line
-    private lateinit var lineCD: Line
-    private lateinit var lineLF: Line
-    private lateinit var lineML: Line
-    private lateinit var lineMF: Line
+    private lateinit var lineJI: Line
+    private lateinit var lineGH: Line
+    private lateinit var lineGF: Line
+    private lateinit var lineFB: Line
+    private lateinit var lineBH: Line
+    private lateinit var lineHF: Line
+
+    private lateinit var lineGE: Line
 
     private lateinit var sliderLength: UISlider
     private lateinit var sliderRadius: UISlider
@@ -45,92 +48,92 @@ class Parabolograaf : Scene() {
 
     private val drawnPointsList = arrayListOf<Circle>()
 
-    private var radiusC: Float = sqrt(2.65f) *100f
-    private var radiusFD: Float = sqrt(3.73f) *100f
+    private var radius: Float = sqrt(11.73f) *100f
 
     override suspend fun SContainer.sceneMain() {
         options()
         resetButtons()
 
-        pointC = circle(10f).colorMul(Colors.CYAN).xy(400, 200)
-        pointF = circle(10f).colorMul(Colors.CYAN).xy(600, 400).draggable {
-            updateScreen()
-        }
+        pointJ = circle(10f).colorMul(Colors.CYAN).xy(200, 800)
+        pointI = circle(10f).colorMul(Colors.CYAN).xy(1000, 800)
 
-        pointD = circle(10f).colorMul(Colors.RED).position(getClosestPointToCircle(pointC.center, radiusC, Point(600, 200)))
+        pointB = circle(10f).colorMul(Colors.CYAN).xy(600, 700)
 
-        pointM = circle(10f).colorMul(Colors.GREEN)
-        pointL = circle(10f).colorMul(Colors.GREEN)
+        pointG = circle(10f).colorMul(Colors.RED).position(getClosestPointToLine(pointJ.pos, pointI.pos, Point(600f, 600f)))
+
+        pointH = circle(10f).colorMul(Colors.GREEN)
+        pointF = circle(10f).colorMul(Colors.GREEN)
         pointE = circle(10f).colorMul(Colors.ORANGE)
 
-        labelC = text("C").colorMul(Colors.CYAN)
-        labelF = text("F").colorMul(Colors.CYAN)
-        labelD = text("D").colorMul(Colors.RED)
-        labelL = text("L").colorMul(Colors.GREEN)
-        labelM = text("M").colorMul(Colors.GREEN)
-        labelE = text("E").colorMul(Colors.ORANGE)
+        lineGE = line(Point(0,0), Point(0,0), Colors.WHITE)
 
-        lineMD = line(pointM.center, pointD.center).colorMul(Colors.WHITE)
-        lineLD = line(pointL.center, pointD.center).colorMul(Colors.WHITE)
-        lineCD = line(pointC.center, pointD.center).colorMul(Colors.WHITE)
-        lineLF = line(pointL.center, pointF.center).colorMul(Colors.WHITE)
-        lineML = line(pointM.center, pointL.center).colorMul(Colors.WHITE)
-        lineMF = line(pointM.center, pointF.center).colorMul(Colors.WHITE)
+        labelJ = text("J").colorMul(Colors.WHITE)
+        labelI = text("I").colorMul(Colors.WHITE)
+        labelG = text("G").colorMul(Colors.WHITE)
+        labelH = text("H").colorMul(Colors.WHITE)
+        labelF = text("F").colorMul(Colors.WHITE)
+        labelE = text("E").colorMul(Colors.WHITE)
+        labelB = text("B").colorMul(Colors.WHITE)
 
 
-        pointC.draggable {
-            pointD.position(getClosestPointToCircle(Point(it.viewNextX, it.viewNextY), radiusC, pointD.pos))
+        lineJI = line(pointJ.pos, pointI.pos, Colors.WHITE)
+        lineGH = line(pointG.pos, pointH.pos, Colors.WHITE)
+        lineGF = line(pointG.pos, pointF.pos, Colors.WHITE)
+        lineFB = line(pointF.pos, pointB.pos, Colors.WHITE)
+        lineBH = line(pointB.pos, pointH.pos, Colors.WHITE)
+        lineHF = line(pointH.pos, pointF.pos, Colors.WHITE)
+
+
+        pointB.draggable {
             updateScreen()
         }
 
-        pointD.draggable(autoMove = false) {
-            if (getAngleBetweenPoints(pointC.pos, Point(it.viewNextX, it.viewNextY)) > getAngleBetweenPoints(pointM.pos, pointL.pos) &&
-                getAngleBetweenPoints(Point(it.viewNextX, it.viewNextY), pointC.pos) < getAngleBetweenPoints(pointM.pos, pointL.pos)
-            ) {
-                pointD.position(
-                    getClosestPointToCircle(
-                        pointC.center,
-                        radiusC,
-                        Point(it.viewNextX, it.viewNextY)
-                    ).originFromCenter
-                )
-                updateScreen()
-            }
+        pointI.draggable {
+            pointG.position(getClosestPointToLine(Point(it.viewNextX, it.viewNextY), pointJ.pos, pointG.pos))
+            updateScreen()
         }
 
-        cCircle = circle(radiusC, fill = Colors.TRANSPARENT, stroke = Colors.WHITE, strokeThickness = 3f)
-        fCircle = circle(radiusFD, fill = Colors.TRANSPARENT, stroke = Colors.WHITE, strokeThickness = 3f)
-        dCircle = circle(radiusFD, fill = Colors.TRANSPARENT, stroke = Colors.WHITE, strokeThickness = 3f)
+        pointJ.draggable {
+            pointG.position(getClosestPointToLine(Point(it.viewNextX, it.viewNextY), pointI.pos, pointG.pos))
+            updateScreen()
+        }
+
+        pointG.draggable(autoMove = false) {
+            pointG.position(getClosestPointToLine(pointJ.pos, pointI.pos, Point(it.viewNextX, it.viewNextY)))
+            updateScreen()
+        }
+
+        gCircle = circle(radius, fill = Colors.TRANSPARENT, stroke = Colors.WHITE, strokeThickness = 3f)
+        bCircle = circle(radius, fill = Colors.TRANSPARENT, stroke = Colors.WHITE, strokeThickness = 3f)
 
         updateScreen()
         moveToTop()
     }
 
     private fun SContainer.updateScreen() {
-        cCircle.position(pointC.center - Point(radiusC, radiusC)).visible(circlesVisible).radius = radiusC
-        fCircle.position(pointF.center - Point(radiusFD, radiusFD)).visible(circlesVisible).radius = radiusFD
-        dCircle.position(pointD.center - Point(radiusFD, radiusFD)).visible(circlesVisible).radius = radiusFD
+        gCircle.position(pointG.center - Point(radius, radius)).visible(circlesVisible).radius = radius
+        bCircle.position(pointB.center - Point(radius, radius)).visible(circlesVisible).radius = radius
 
-        pointD.position(getClosestPointToCircle(pointC.center, radiusC, pointD.center).originFromCenter)
+        pointG.position(getClosestPointToLine(pointJ.pos, pointI.pos, pointG.pos))
 
-        pointM.position(getCircleIntersect(pointF.center, pointD.center, radiusFD, radiusFD).originFromCenter)
-        pointL.position(getCircleIntersect(pointD.center, pointF.center, radiusFD, radiusFD).originFromCenter)
+        pointH.position(getCircleIntersect(pointB.center, pointG.center, radius, radius).originFromCenter)
+        pointF.position(getCircleIntersect(pointG.center, pointB.center, radius, radius).originFromCenter)
 
-        pointE.position(getIntersectionFourPoints(pointC.center, pointD.center, pointM.center, pointL.center)?.originFromCenter ?: Point(0, 0))
+        val points = getPointPerpendicularToLine(pointJ.pos, pointI.pos, pointG.pos, 5000f)
 
-        lineCD.setPoints(pointC.center, pointE.center)
-        lineMD.setPoints(pointM.center, pointD.center)
-        lineLD.setPoints(pointL.center, pointD.center)
-        lineLF.setPoints(pointL.center, pointF.center)
-        lineML.setPoints(pointM.center, pointE.center)
-        lineMF.setPoints(pointM.center, pointF.center)
+        pointE.position(getIntersectionFourPoints(pointG.center, points.first.center, pointF.center, pointH.center)?.originFromCenter ?: Point(0, 0))
 
-        println("ML" + getAngleBetweenPoints(pointM.center, pointL.center))
-        println("CD" + getAngleBetweenPoints(pointD.center, pointC.center))
+        lineBH.setPoints(pointB.center, pointH.center)
+        lineFB.setPoints(pointF.center, pointB.center)
+        lineGF.setPoints(pointG.center, pointF.center)
+        lineGH.setPoints(pointG.center, pointH.center)
+        lineJI.setPoints(pointJ.center, pointI.center)
+        lineHF.setPoints(pointH.center, pointF.center)
+        lineGE.setPoints(points.first.center, points.second.center)
 
 
         if (showDrawnDots) {
-            drawnPointsList.add(circle(10f).position(pointE.pos).colorMul(Colors.WHITE))
+            drawnPointsList.add(circle(10f).position(pointE.pos).colorMul(Colors.WHITE).apply { bringToBottom() })
             if (drawnPointsList.size > 1000) {
                 drawnPointsList[0].removeFromParent()
                 drawnPointsList.removeAt(0)
@@ -141,29 +144,33 @@ class Parabolograaf : Scene() {
     }
 
     private fun moveToTop() {
-        pointC.bringToTop()
+        pointJ.bringToTop()
+        pointI.bringToTop()
+        pointG.bringToTop()
         pointF.bringToTop()
-        pointD.bringToTop()
-        pointL.bringToTop()
-        pointM.bringToTop()
+        pointH.bringToTop()
         pointE.bringToTop()
-        labelC.bringToTop()
+        pointB.bringToTop()
+
+        labelJ.bringToTop()
+        labelI.bringToTop()
+        labelG.bringToTop()
         labelF.bringToTop()
-        labelD.bringToTop()
-        labelL.bringToTop()
-        labelM.bringToTop()
+        labelH.bringToTop()
         labelE.bringToTop()
+        labelB.bringToTop()
     }
 
     private fun updateLabels() {
         val offset = 20
 
-        labelC.position(pointC.center + Point(offset, offset))
-        labelF.position(pointF.center + Point(offset, offset))
-        labelD.position(pointD.center + Point(offset, offset))
-        labelL.position(pointL.center + Point(offset, offset))
-        labelM.position(pointM.center + Point(offset, offset))
-        labelE.position(pointE.center + Point(offset, offset))
+        labelJ.position(pointJ.pos + Point(offset, offset))
+        labelI.position(pointI.pos + Point(offset, offset))
+        labelG.position(pointG.pos + Point(offset, offset))
+        labelF.position(pointF.pos + Point(offset, offset))
+        labelH.position(pointH.pos + Point(offset, offset))
+        labelE.position(pointE.pos + Point(offset, offset))
+        labelB.position(pointB.pos + Point(offset, offset))
     }
 
     private fun SContainer.resetButtons() {
@@ -178,16 +185,16 @@ class Parabolograaf : Scene() {
         }
 
         uiButton(label = "Reset").xy(450, 10).onClick {
-            radiusC = sqrt(2.65f) *100f
-            radiusFD = sqrt(3.73f) *100f
-            sliderLength.value = radiusFD/100.0
-            sliderLength.text.text = "Diamond size: ${sliderLength.value.roundDecimalPlaces(2)}"
-            sliderRadius.value = radiusC/100.0
+            radius = sqrt(11.73f)*100
+            sliderLength.value = radius/100.0
             sliderRadius.text.text = "Circle radius: ${sliderRadius.value.roundDecimalPlaces(2)}"
-            pointC.position(Point(400, 200))
-            pointF.position(Point(600, 400))
+            pointJ.position(Point(200, 800))
+            pointI.position(Point(1000, 800))
 
-            pointD.position(getClosestPointToCircle(pointC.center, radiusC, Point(600, 200)))
+            pointB.position(Point(600, 400))
+
+            pointG.position(Point(600, 600))
+
             drawnPointsList.forEach { it.removeFromParent() }
             drawnPointsList.clear()
 
@@ -196,45 +203,27 @@ class Parabolograaf : Scene() {
     }
 
     private fun SContainer.options() {
-        sliderLength = uiSlider(radiusFD/100, min = 0.01f, max = 6.38f, step = 0.01f).xy(10, 10)
-        sliderLength.text.color = Colors.WHITE
-        sliderLength.text.text = "Diamond size: ${sliderLength.value.roundDecimalPlaces(2)}"
-        sliderLength.onChange {
-            radiusFD = it * 100
-            sliderLength.text.text = "Diamond size: ${sliderLength.value.roundDecimalPlaces(2)}"
-            updateScreen()
-        }
-
-        sliderRadius = uiSlider(radiusC/100, min = 0.01f, max = 6.38f, step = 0.01f).xy(10, 30)
-        sliderRadius.text.text = "Circle radius: ${sliderRadius.value.roundDecimalPlaces(2)}"
-        sliderRadius.text.color = Colors.WHITE
-        sliderRadius.onChange {
-            radiusC = it * 100
-            pointD.position(getClosestPointToCircle(pointC.center, radiusC, pointD.pos))
-            sliderRadius.text.text = "Circle radius: ${sliderRadius.value.roundDecimalPlaces(2)}"
-            updateScreen()
-        }
-
-        uiCheckBox(size = Size(150, 32), checked = circlesVisible, text = "Show circles").xy(10, 50).onChange {
+        uiCheckBox(size = Size(150, 32), checked = circlesVisible, text = "Show circles").xy(10, 10).onChange {
             circlesVisible = it.checked
-            cCircle.visible(circlesVisible)
-            fCircle.visible(circlesVisible)
-            dCircle.visible(circlesVisible)
+            gCircle.visible(circlesVisible)
+            bCircle.visible(circlesVisible)
         }
 
-        uiCheckBox(size = Size(200, 32), checked = showDrawnDots, text = "Show drawn dots").xy(10, 80).onChange { checkbox ->
+        uiCheckBox(size = Size(200, 32), checked = showDrawnDots, text = "Show drawn dots").xy(10, 40).onChange { checkbox ->
             showDrawnDots = checkbox.checked
             drawnPointsList.forEach { it.removeFromParent() }
             drawnPointsList.clear()
         }
 
-        uiCheckBox(size = Size(150, 32), checked = labelsVisible, text = "Show labels").xy(10, 110).onChange {
+        uiCheckBox(size = Size(150, 32), checked = labelsVisible, text = "Show labels").xy(10, 70).onChange {
             labelsVisible = it.checked
-            labelC.visible(labelsVisible)
+            labelJ.visible(labelsVisible)
+            labelI.visible(labelsVisible)
+            labelG.visible(labelsVisible)
             labelF.visible(labelsVisible)
-            labelD.visible(labelsVisible)
-            labelL.visible(labelsVisible)
-            labelM.visible(labelsVisible)
+            labelH.visible(labelsVisible)
+            labelE.visible(labelsVisible)
+            labelB.visible(labelsVisible)
         }
     }
 }

@@ -44,13 +44,13 @@ class Menu : Scene() {
             sceneContainer.changeTo({ Hyperbolograaf() })
         }
 
-        /*text("Start Parabolograaf (3)") {
+        text("Start Parabolograaf (3)") {
             position(50, 300)
             colorMul = Colors.WHITE
             fontSize = 100.0f
         }.onClick {
             sceneContainer.changeTo({ Parabolograaf() })
-        }*/
+        }
     }
 
     override suspend fun SContainer.sceneMain() {
