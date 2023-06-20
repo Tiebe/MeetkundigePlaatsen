@@ -54,10 +54,10 @@ class Parabolograaf : Scene() {
         options()
         resetButtons()
 
-        pointJ = circle(10f).colorMul(Colors.CYAN).xy(200, 800)
-        pointI = circle(10f).colorMul(Colors.CYAN).xy(1000, 800)
+        pointJ = circle(10f).colorMul(Colors.CYAN).xy(200, 400)
+        pointI = circle(10f).colorMul(Colors.CYAN).xy(1000, 400)
 
-        pointB = circle(10f).colorMul(Colors.CYAN).xy(600, 700)
+        pointB = circle(10f).colorMul(Colors.CYAN).xy(600, 300)
 
         pointG = circle(10f).colorMul(Colors.RED).position(getClosestPointToLine(pointJ.pos, pointI.pos, Point(600f, 600f)))
 

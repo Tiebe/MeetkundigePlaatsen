@@ -49,32 +49,7 @@ class Ellipsograaf : Scene() {
     private var radiusIG: Float = sqrt(8.7f) *100f
 
     override suspend fun SContainer.sceneMain() {
-        keys.down {
-            if (it.key == Key.ESCAPE) {
-                sceneContainer.changeTo<Menu>()
-            }
-        }
 
-        uiButton(label = "Back").xy(300, 10).onClick {
-            sceneContainer.changeTo<Menu>()
-        }
-
-        uiButton(label = "Reset").xy(450, 10).onClick {
-            radiusH = sqrt(11.39f) *100f
-            radiusIG = sqrt(8.7f) *100f
-            sliderLength.value = radiusIG/100.0
-            sliderLength.text.text = "Diamond size: ${sliderLength.value.roundDecimalPlaces(2)}"
-            sliderRadius.value = radiusH/100.0
-            sliderRadius.text.text = "Circle radius: ${sliderRadius.value.roundDecimalPlaces(2)}"
-            pointH.position(400, 400)
-            pointI.position(600, 400)
-
-            pointG.position(getClosestPointToCircle(pointH.center, radiusH, Point(600, 200)))
-            drawnPointsList.forEach { it.removeFromParent() }
-            drawnPointsList.clear()
-
-            updateScreen()
-        }
 
         pointH = circle(10f).colorMul(Colors.CYAN).xy(400, 400)
         pointI = circle(10f).colorMul(Colors.CYAN).xy(600, 400)
@@ -89,50 +64,6 @@ class Ellipsograaf : Scene() {
         lineIP = line(pointI.center, pointP.center).colorMul(Colors.WHITE)
         lineGP = line(pointG.center, pointP.center).colorMul(Colors.WHITE)
         lineOI = line(pointO.center, pointI.center).colorMul(Colors.WHITE)
-
-        sliderLength = uiSlider(radiusIG/100, min = 0.01f, max = 6.38f, step = 0.01f).xy(10, 10)
-        sliderLength.text.color = Colors.WHITE
-        sliderLength.text.text = "Diamond size: ${sliderLength.value.roundDecimalPlaces(2)}"
-        sliderLength.onChange {
-            radiusIG = it * 100
-            sliderLength.text.text = "Diamond size: ${sliderLength.value.roundDecimalPlaces(2)}"
-            updateScreen()
-        }
-
-        sliderRadius = uiSlider(radiusH/100, min = 0.01f, max = 6.38f, step = 0.01f).xy(10, 30)
-        sliderRadius.text.text = "Circle radius: ${sliderRadius.value.roundDecimalPlaces(2)}"
-        sliderRadius.text.color = Colors.WHITE
-        sliderRadius.onChange {
-            radiusH = it * 100
-            pointG.position(getClosestPointToCircle(pointH.center, radiusH, pointG.pos))
-            sliderRadius.text.text = "Circle radius: ${sliderRadius.value.roundDecimalPlaces(2)}"
-            updateScreen()
-        }
-
-        uiCheckBox(size = Size(150, 32), checked = circlesVisible, text = "Show circles").xy(10, 50).onChange {
-            circlesVisible = it.checked
-            hCircle.visible(circlesVisible)
-            iCircle.visible(circlesVisible)
-            gCircle.visible(circlesVisible)
-        }
-
-        uiCheckBox(size = Size(200, 32), checked = showDrawnDots, text = "Show drawn dots").xy(10, 80).onChange { checkbox ->
-            showDrawnDots = checkbox.checked
-            drawnPointsList.forEach { it.removeFromParent() }
-            drawnPointsList.clear()
-        }
-
-        uiCheckBox(size = Size(150, 32), checked = labelsVisible, text = "Show labels").xy(10, 110).onChange {
-            labelsVisible = it.checked
-            labelH.visible(labelsVisible)
-            labelI.visible(labelsVisible)
-            labelG.visible(labelsVisible)
-            labelP.visible(labelsVisible)
-            labelO.visible(labelsVisible)
-            labelE.visible(labelsVisible)
-        }
-
-
 
         labelH = text("H").colorMul(Colors.CYAN)
         labelI = text("I").colorMul(Colors.CYAN)
@@ -159,6 +90,8 @@ class Ellipsograaf : Scene() {
             updateScreen()
         }
 
+        options()
+        resetButtons()
         updateScreen()
         moveToTop()
     }
@@ -227,4 +160,81 @@ class Ellipsograaf : Scene() {
         labelO.position(pointO.center + Point(offset, offset))
         labelE.position(pointE.center + Point(offset, offset))
     }
+
+    private fun SContainer.options() {
+
+        sliderLength = uiSlider(radiusIG/100, min = 0.01f, max = 6.38f, step = 0.01f).xy(10, 10)
+        sliderLength.text.color = Colors.WHITE
+        sliderLength.text.text = "Diamond size: ${sliderLength.value.roundDecimalPlaces(2)}"
+        sliderLength.onChange {
+            radiusIG = it * 100
+            sliderLength.text.text = "Diamond size: ${sliderLength.value.roundDecimalPlaces(2)}"
+            updateScreen()
+        }
+
+        sliderRadius = uiSlider(radiusH/100, min = 0.01f, max = 6.38f, step = 0.01f).xy(10, 30)
+        sliderRadius.text.text = "Circle radius: ${sliderRadius.value.roundDecimalPlaces(2)}"
+        sliderRadius.text.color = Colors.WHITE
+        sliderRadius.onChange {
+            radiusH = it * 100
+            pointG.position(getClosestPointToCircle(pointH.center, radiusH, pointG.pos))
+            sliderRadius.text.text = "Circle radius: ${sliderRadius.value.roundDecimalPlaces(2)}"
+            updateScreen()
+        }
+
+        uiCheckBox(size = Size(150, 32), checked = circlesVisible, text = "Show circles").xy(10, 50).onChange {
+            circlesVisible = it.checked
+            hCircle.visible(circlesVisible)
+            iCircle.visible(circlesVisible)
+            gCircle.visible(circlesVisible)
+        }
+
+        uiCheckBox(size = Size(200, 32), checked = showDrawnDots, text = "Show drawn dots").xy(10, 80).onChange { checkbox ->
+            showDrawnDots = checkbox.checked
+            drawnPointsList.forEach { it.removeFromParent() }
+            drawnPointsList.clear()
+        }
+
+        uiCheckBox(size = Size(150, 32), checked = labelsVisible, text = "Show labels").xy(10, 110).onChange {
+            labelsVisible = it.checked
+            labelH.visible(labelsVisible)
+            labelI.visible(labelsVisible)
+            labelG.visible(labelsVisible)
+            labelP.visible(labelsVisible)
+            labelO.visible(labelsVisible)
+            labelE.visible(labelsVisible)
+        }
+
+
+    }
+
+    private fun SContainer.resetButtons() {
+        keys.down {
+            if (it.key == Key.ESCAPE) {
+                sceneContainer.changeTo<Menu>()
+            }
+        }
+
+        uiButton(label = "Back").xy(300, 10).onClick {
+            sceneContainer.changeTo<Menu>()
+        }
+
+        uiButton(label = "Reset").xy(450, 10).onClick {
+            radiusH = sqrt(11.39f) *100f
+            radiusIG = sqrt(8.7f) *100f
+            sliderLength.value = radiusIG/100.0
+            sliderLength.text.text = "Diamond size: ${sliderLength.value.roundDecimalPlaces(2)}"
+            sliderRadius.value = radiusH/100.0
+            sliderRadius.text.text = "Circle radius: ${sliderRadius.value.roundDecimalPlaces(2)}"
+            pointH.position(400, 400)
+            pointI.position(600, 400)
+
+            pointG.position(getClosestPointToCircle(pointH.center, radiusH, Point(600, 200)))
+            drawnPointsList.forEach { it.removeFromParent() }
+            drawnPointsList.clear()
+
+            updateScreen()
+        }
+    }
+
 }
